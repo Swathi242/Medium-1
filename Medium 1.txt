@@ -1,0 +1,82 @@
+import java.util.Scanner;
+
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+
+    TreeNode(int x) {
+        val = x;
+    }
+}
+
+public class LowestCommonAncestorBST {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter the values for the tree nodes (comma-separated, use 'null' for null nodes): ");
+        String input = scanner.nextLine();
+        String[] nodeValues = input.split(",");
+
+        System.out.print("Enter the value of node p: ");
+        int p = scanner.nextInt();
+
+        System.out.print("Enter the value of node q: ");
+        int q = scanner.nextInt();
+
+        TreeNode root = buildTree(nodeValues);
+        TreeNode result = lowestCommonAncestor(root, p, q);
+
+        System.out.println("Lowest Common Ancestor: " + result.val);
+
+   
+        scanner.close();
+    }
+
+    private static TreeNode buildTree(String[] nodeValues) {
+        if (nodeValues == null || nodeValues.length == 0 || nodeValues[0].equals("null")) {
+            return null;
+        }
+
+        TreeNode root = new TreeNode(Integer.parseInt(nodeValues[0]));
+        int index = 1;
+        int length = nodeValues.length;
+
+        java.util.Queue<TreeNode> queue = new java.util.LinkedList<>();
+        queue.offer(root);
+
+        while (index < length) {
+            TreeNode current = queue.poll();
+
+            String leftValue = nodeValues[index++];
+            if (!leftValue.equals("null")) {
+                current.left = new TreeNode(Integer.parseInt(leftValue));
+                queue.offer(current.left);
+            }
+
+            if (index < length) {
+                String rightValue = nodeValues[index++];
+                if (!rightValue.equals("null")) {
+                    current.right = new TreeNode(Integer.parseInt(rightValue));
+                    queue.offer(current.right);
+                }
+            }
+        }
+
+        return root;
+    }
+
+    private static TreeNode lowestCommonAncestor(TreeNode root, int p, int q) {
+        if (root == null) {
+            return null;
+        }
+
+        if (p < root.val && q < root.val) {
+            return lowestCommonAncestor(root.left, p, q);
+        } else if (p > root.val && q > root.val) {
+            return lowestCommonAncestor(root.right, p, q);
+        } else {
+            return root;
+        }
+    }
+}
